@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset='utf-8'>
+        <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+        <title>Nico's Momentum App</title>
+        <meta name='viewport' content='width=device-width, initial-scale=1'>
+        <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
+        <script src="https://unpkg.com/dayjs@1.8.21/dayjs.min.js"></script>
+    </head>
+    <!-- User Stories
+    User Story #1: As a user, I want to put my name on the homepage.
+    User Story #2: As a user, I want to see the current time on the homepage.
+    User Story #3: As a user, I want to see a greeting with my inputted name on the homepage.
+    User Story #4: As a user, I want to add my main focus for today on the homepage and display it also on the same page.
+    User Story #5: As a user, I want to see a random quote on the homepage.
+    User Story #6: As a user, I want to add a todo list on the homepage and is able to see the list on the same page.
+    User Story #7: As a user, I want to add a new quote for my momentum app. 
+    bonus: new background after each refresh-->
+
+    <body onload="realtimeClock()">
+        <div class = "background">
+
+            <div class = "timeContainer">
+                <div id = "time"></div>
+            </div>
+
+            <div class = toDoSection>
+
+                <div class = "toDoSectionToggle">
+                    <div id = "toDoContainer"></div>
+                    <input id = "toDoInput" type = "text" placeholder="add a to-do">
+                </div>
+
+                <h4 id = "toDoToggleBtn">To Do</h4>
+            </div>
+
+            <div class = "nameInputContainer">
+                <p id ="greeting">Hello, what is your name?</p> 
+                <input id = "nameInput" type = "text"></p>
+                <div class ="nameContainer"></div>
+            </div>
+
+            <div class = "focusInputContainer">
+                <p id ="focusGreeting">What is your main focus for today?</p> 
+                <input id = "focusInput" type = "text">
+                <div class ="focusContainer">Today: <br></div>
+            </div>
+
+            <div class = "quoteContainer">
+                <p id = "quote"></p>
+                <input id ="addQuote" type = "text" placeholder = "add a quote">
+            </div>
+
+            <div class = "greetingContainer">
+                <h2 id = "greeting"></h2>
+            </div>
+
+        </div>
+
+        <script src='main.js'></script>
+    </body>
+</html>
