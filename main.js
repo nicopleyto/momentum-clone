@@ -7,11 +7,11 @@ backgroundSelection = ['https://images.unsplash.com/photo-1529928750697-1d964631
 'https://images.unsplash.com/photo-1563985336376-568060942b80?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1476&q=80',
 'https://images.unsplash.com/photo-1515248101569-f6e91c070aa8?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1470&q=80']
 let random = Math.floor(Math.random() * backgroundSelection.length)
-document.querySelector('.background').style.backgroundImage = `url('${backgroundSelection[random]}')`
+document.querySelector('.background').style.background = `linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url('${backgroundSelection[random]}')`
 
 setInterval( () => { 
     let random = Math.floor(Math.random() * backgroundSelection.length)
-    document.querySelector('.background').style.backgroundImage = `url('${backgroundSelection[random]}')` 
+    document.querySelector('.background').style.background = `linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url('${backgroundSelection[random]}')` 
     }, 3600000
 );
 
