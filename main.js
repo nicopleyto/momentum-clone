@@ -21,25 +21,6 @@ function realtimeClock() {
     setTimeout(realtimeClock, 500)
 }
 
-// function realtimeClock() {
-//     var rtClock = new Date();
-//     var hours = rtClock.getHours();
-//     var minutes = rtClock.getMinutes();
-
-//     // add am and pm
-//     var amPm = (hours < 12) ? 'am' : 'pm';
-
-//     // convert hours to 12 hour format
-//     hours = (hours > 12) ? hours - 12 : hours;
-
-//     // pad hours, mins, and secs w leading zeroes
-//     hours = ("0" + hours).slice(-2);
-//     minutes = ("0" + minutes).slice(-2);
-
-//     document.querySelector('#time').innerHTML = `${hours}:${minutes}${amPm}`
-//     var t = setTimeout(realtimeClock, 500);
-// }
-
 //input name and main focus for today
 
 //gets name from local storage if any
@@ -98,84 +79,11 @@ document.querySelector('#nameInput').addEventListener('keypress', (e) => {
             document.querySelector('.focusContainer').style.visibility = 'hidden'
             document.querySelector('#focusGreeting').style.visibility = 'hidden'
             document.querySelector('#focusInput').style.visibility = 'hidden'
+
+            localStorage.removeItem('name')
         })
     }
 })
-
-//focus for today
-if (localStorage.getItem('focustoday')) {
-    let paragraph = document.createElement('p')
-    paragraph.innerHTML = localStorage.getItem('focustoday')
-
-    document.querySelector('.focusContainer').appendChild(paragraph)
-
-    document.querySelector('.focusContainer').style.display = 'block'
-    document.querySelector('#focusGreeting').style.display = 'none'
-    document.querySelector('#focusInput').style.display = 'none'
-    document.querySelector('#focusInput').value = ''
-
-    paragraph.addEventListener('click', () => {
-        paragraph.style.textDecoration = "line-through"
-        localStorage.removeItem('focustoday')
-    })
-    paragraph.addEventListener('dblclick', () => {
-        document.querySelector('.focusContainer').removeChild(paragraph)
-        document.querySelector('.focusContainer').style.display = 'none'
-        document.querySelector('#focusGreeting').style.display = 'block'
-        document.querySelector('#focusInput').style.display = 'block'
-    })
-}
-
-document.querySelector('#focusInput').addEventListener('keypress',(e) => {
-    if (e.key === 'Enter') {
-        localStorage.setItem('focustoday', `${document.querySelector('#focusInput').value}`)
-
-        let paragraph = document.createElement('p')
-        paragraph.innerHTML = `${localStorage.getItem('focustoday')}`
-
-        document.querySelector('.focusContainer').appendChild(paragraph)
-
-        document.querySelector('.focusContainer').style.display = 'block'
-        document.querySelector('#focusGreeting').style.display = 'none'
-        document.querySelector('#focusInput').style.display = 'none'
-        document.querySelector('#focusInput').value = ''
-
-        paragraph.addEventListener('click', () => {
-            paragraph.style.textDecoration = "line-through"
-            localStorage.removeItem('focustoday')
-        })
-        paragraph.addEventListener('dblclick', () => {
-            document.querySelector('.focusContainer').removeChild(paragraph)
-            document.querySelector('.focusContainer').style.display = 'none'
-            document.querySelector('#focusGreeting').style.display = 'block'
-            document.querySelector('#focusInput').style.display = 'block'
-        })
-    }
-})
-
-//TO DO LIST
-document.querySelector('#toDoInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        //localStorage.setItem('todo', `${document.querySelector('#toDoInput').value}`)
-
-        let paragraph = document.createElement('p')
-        paragraph.innerText = document.querySelector('#toDoInput').value
-        document.querySelector('#toDoContainer').appendChild(paragraph)
-        document.querySelector('#toDoInput').value = ''
-
-        paragraph.addEventListener('click', () => {
-            paragraph.style.textDecoration = "line-through"
-        })
-        paragraph.addEventListener('dblclick', () => {
-            document.querySelector('#toDoContainer').removeChild(paragraph)
-        })
-    }
-});
-
-document.querySelector('#toDoToggleBtn').addEventListener('click', ()=> {
-    document.querySelector('.toDoSectionToggle').classList.toggle('show')
-})
-
 
 //quotes
 inspirationalQuotes = [`"Concentrate all your thoughts upon the work in hand. The sun's rays do not burn until brought to a focus." -Alexander Graham Bell`,
@@ -215,3 +123,154 @@ document.querySelector('#addQuote').addEventListener('dblclick', () => {
     document.querySelector('#addQuote').style.display = 'none'
     document.querySelector('#quote').style.display = 'flex'
 })
+
+//to-do list with local storage
+document.querySelector('#toDoToggleBtn').addEventListener('click', ()=> {
+    document.querySelector('.toDoSectionToggle').classList.toggle('show')
+})
+
+if (localStorage.getItem('todos')) { //gets todos inside local storage
+
+    let todos = JSON.parse(localStorage.getItem('todos'))
+
+    if (todos !== []) {
+        todos.forEach(todo => {
+            let paragraph = document.createElement('p')
+            paragraph.innerText = todo.name
+            if (todo.status === 'done') {paragraph.style.textDecoration = "line-through"}
+            document.querySelector('#toDoContainer').appendChild(paragraph)
+
+            paragraph.addEventListener('click', () => {
+                let todos = JSON.parse(localStorage.getItem('todos'))
+                let newTodo = todos.map(todo => {
+                    if (todo.name === paragraph.innerText) {
+                        todo.status = 'done'
+                        return todo
+                    }
+                    return todo
+                })
+                localStorage.setItem('todos', JSON.stringify(newTodo))
+                paragraph.style.textDecoration = "line-through"
+            })
+
+            paragraph.addEventListener('dblclick', () => {
+                let todos = JSON.parse(localStorage.getItem('todos'))
+                let newTodo = todos.filter(todo => todo.name !== paragraph.innerText)
+                if (newTodo[0] === null) {
+                    localStorage.setItem('todos', JSON.stringify([]))
+                }
+                else {localStorage.setItem('todos', JSON.stringify(newTodo))}
+                document.querySelector('#toDoContainer').removeChild(paragraph)
+            })
+        })
+    }
+}
+else {
+    localStorage.setItem('todos',JSON.stringify([])) //creates empty todos array in local storage if none exists
+}
+
+
+document.querySelector('#toDoInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+
+        let todos = JSON.parse(localStorage.getItem('todos')) //todos array
+        let todo = {}
+        todo.name = document.querySelector('#toDoInput').value //takes to-do value from input and sets to name
+        todo.status = 'pending'
+        todos.push(todo) //puts todo inside todos
+        localStorage.setItem('todos', JSON.stringify(todos)) //updates todos in localStorage
+
+        document.querySelector('#toDoInput').value = ''
+
+        let paragraph = document.createElement('p')
+        paragraph.innerText = todo.name
+        document.querySelector('#toDoContainer').appendChild(paragraph)
+
+        paragraph.addEventListener('click', () => {
+            let todos = JSON.parse(localStorage.getItem('todos'))
+            let newTodo = todos.map(todo => {
+                if (todo.name === paragraph.innerText) {
+                    todo.status = 'done'
+                    return todo
+                }
+                return todo
+            })
+
+            localStorage.setItem('todos', JSON.stringify(newTodo))
+            paragraph.style.textDecoration = "line-through"
+        })
+
+        paragraph.addEventListener('dblclick', () => {
+            let todos = JSON.parse(localStorage.getItem('todos'))
+            let newTodo = todos.filter(todo => todo.name !== paragraph.innerText)
+            if (newTodo[0] === null) {
+                localStorage.setItem('todos', JSON.stringify([]))
+            }
+            else {localStorage.setItem('todos', JSON.stringify(newTodo))}
+            document.querySelector('#toDoContainer').removeChild(paragraph)
+        })
+
+    }
+})
+
+//focus for today with local storage
+if (localStorage.getItem('focustoday')) {
+
+    todo = JSON.parse(localStorage.getItem('focustoday'))
+    let paragraph = document.createElement('p')
+    paragraph.innerHTML = todo.name
+    if (todo.status === 'done') {paragraph.style.textDecoration = "line-through"}
+    document.querySelector('.focusContainer').appendChild(paragraph)
+
+    document.querySelector('.focusContainer').style.display = 'block'
+    document.querySelector('#focusGreeting').style.display = 'none'
+    document.querySelector('#focusInput').style.display = 'none'
+    document.querySelector('#focusInput').value = ''
+
+    paragraph.addEventListener('click', () => {
+        paragraph.style.textDecoration = "line-through"
+        todo = JSON.parse(localStorage.getItem('focustoday'))
+        todo.status = 'done'
+        localStorage.setItem('focustoday', JSON.stringify(todo))
+    })
+    paragraph.addEventListener('dblclick', () => {
+        document.querySelector('.focusContainer').removeChild(paragraph)
+        document.querySelector('.focusContainer').style.display = 'none'
+        document.querySelector('#focusGreeting').style.display = 'block'
+        document.querySelector('#focusInput').style.display = 'block'
+        localStorage.removeItem('focustoday')
+    })
+}
+
+document.querySelector('#focusInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') {
+        let todo = {}
+        todo.name = document.querySelector('#focusInput').value //takes to-do value from input and sets to name
+        todo.status = 'pending'
+        localStorage.setItem('focustoday', JSON.stringify(todo))
+
+        let paragraph = document.createElement('p')
+        paragraph.innerHTML = todo.name
+        document.querySelector('.focusContainer').appendChild(paragraph)
+
+        document.querySelector('.focusContainer').style.display = 'block'
+        document.querySelector('#focusGreeting').style.display = 'none'
+        document.querySelector('#focusInput').style.display = 'none'
+        document.querySelector('#focusInput').value = ''
+
+        paragraph.addEventListener('click', () => {
+            paragraph.style.textDecoration = "line-through"
+            todo = JSON.parse(localStorage.getItem('focustoday'))
+            todo.status = 'done'
+            localStorage.setItem('focustoday', JSON.stringify(todo))
+        })
+        paragraph.addEventListener('dblclick', () => {
+            document.querySelector('.focusContainer').removeChild(paragraph)
+            document.querySelector('.focusContainer').style.display = 'none'
+            document.querySelector('#focusGreeting').style.display = 'block'
+            document.querySelector('#focusInput').style.display = 'block'
+            localStorage.removeItem('focustoday')
+        })
+    }
+})
+
