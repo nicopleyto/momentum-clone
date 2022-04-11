@@ -120,7 +120,7 @@ document.querySelector('#addQuote').addEventListener('keypress', (e)=> {
     }
 })
 
-document.querySelector('#addQuote').addEventListener('click', () => {
+document.querySelector('#addQuote').addEventListener('dblclick', () => {
     randomQuote()
     document.querySelector('#addQuote').style.display = 'none'
     document.querySelector('#quote').style.display = 'flex'
